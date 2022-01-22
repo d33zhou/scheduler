@@ -4,8 +4,8 @@ export function getAppointmentsForDay(state, day) {
   for (const dayElement of state.days) {
     if (dayElement.name === day) {
       
-      dayElement.appointments.forEach(app => {
-        appointments.push(state.appointments[app]);
+      dayElement.appointments.forEach(appointment => {
+        appointments.push(state.appointments[appointment]);
       })
 
       return appointments;
@@ -24,4 +24,21 @@ export function getInterview(state, interview) {
   }
 
   return null;
+}
+
+export function getInterviewersForDay(state, day) {
+  let interviewers = [];
+
+  for (const dayElement of state.days) {
+    if (dayElement.name === day) {
+      
+      dayElement.interviewers.forEach(interview => {
+        interviewers.push(state.interviewers[interview]);
+      })
+
+      return interviewers;
+    }
+  }
+
+  return interviewers;
 }
