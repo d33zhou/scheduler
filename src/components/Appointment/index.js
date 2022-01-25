@@ -6,6 +6,7 @@ import Empty from './Empty';
 import Form from './Form';
 import Status from './Status';
 import Confirm from './Confirm';
+import Error from './Error';
 import useVisualMode from 'hooks/useVisualMode';
 
 const CONFIRM = "CONFIRM";
@@ -31,14 +32,14 @@ export default function Appointment(props) {
     transition(SAVE);
     bookInterview(id, interview)
       .then(() => transition(SHOW))
-      .catch(() => transition(ERROR_SAVE));
+      .catch(error => transition(ERROR_SAVE, true));
   }
 
   function deleteAppointment(id) {
-    transition(DELETE);
+    transition(DELETE, true);
     cancelInterview(id)
       .then(() => transition(EMPTY))
-      .catch(() => transition(ERROR_DELETE));
+      .catch(error => transition(ERROR_DELETE, true));
   }
 
   return (
@@ -65,10 +66,18 @@ export default function Appointment(props) {
         />}
       {mode === EDIT && <Form
         student={interview.student}
-        interviewer={interview.interviewer}
+        interviewer={interview.interviewer.id}
         interviewers={interviewers}
         onCancel={() => back()}
         onSave={save}
+        />}
+      {mode === ERROR_SAVE && <Error
+        message="Could not save appointment"
+        onClose={() => back()}
+        />}
+      {mode === ERROR_DELETE && <Error
+        message="Could not cancel appointment"
+        onClose={() => back()}
         />}
     </article>
   );
