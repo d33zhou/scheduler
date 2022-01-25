@@ -34,21 +34,6 @@ export default function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
-
-    // const dayId = state.days.find(day => day.name === state.day).id - 1; // -1 to match state.days 0 indexing from server API
-    // const spotsRemaining = getAppointmentsForDay(state, state.day)
-    //   .filter(appointment => appointment.interview === null)
-    //   .length - 1; // 0 - 5 spots
-
-    // const day  = {
-    //   ...state.days[dayId],
-    //   spots: spotsRemaining
-    // }
-
-    // const days = state.days.map(stateDay => {
-    //   const stateDayId = stateDay.id - 1; // to match 0 indexing of state.days
-    //   return stateDayId !== dayId ? {...state.days[stateDayId]} : day;
-    // });
     
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => setState(prev => ({...prev, appointments})))
@@ -66,21 +51,6 @@ export default function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
-
-    // const dayId = state.days.find(day => day.name === state.day).id - 1; // -1 to match state.days 0 indexing from server API
-    // const spotsRemaining = getAppointmentsForDay(state, state.day)
-    //   .filter(appointment => appointment.interview === null)
-    //   .length + 1;
-
-    // const day = {
-    //   ...state.days[dayId],
-    //   spots: spotsRemaining
-    // }
-
-    // const days = state.days.map(stateDay => {
-    //   const stateDayId = stateDay.id - 1; // to match 0 indexing of state.days
-    //   return stateDayId !== dayId ? {...state.days[stateDayId]} : day;
-    // });
     
     return axios.delete(`/api/appointments/${id}`)
       .then(() => setState(({...state, appointments})))
