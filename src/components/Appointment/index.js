@@ -8,13 +8,15 @@ import Status from './Status';
 import Confirm from './Confirm';
 import useVisualMode from 'hooks/useVisualMode';
 
-const EMPTY = "EMPTY";
-const SHOW = "SHOW";
-const CREATE = "CREATE";
-const STATUS = "STATUS";
 const CONFIRM = "CONFIRM";
-
-let statusMessage = "";
+const CREATE = "CREATE";
+const DELETE = "DELETE";
+const EMPTY = "EMPTY";
+const EDIT = "EDIT";
+const SAVE = "SAVE";
+const SHOW = "SHOW";
+const ERROR_SAVE = "ERROR_SAVE";
+const ERROR_DELETE = "ERROR_DELETE";
 
 export default function Appointment(props) {
   const {id, time, interview, interviewers, bookInterview, cancelInterview } = props;
@@ -26,15 +28,17 @@ export default function Appointment(props) {
       interviewer
     };
     
-    statusMessage="Saving"
-    transition(STATUS);
-    bookInterview(id, interview).then(() => transition(SHOW));
+    transition(SAVE);
+    bookInterview(id, interview)
+      .then(() => transition(SHOW))
+      .catch(() => transition(ERROR_SAVE));
   }
 
   function deleteAppointment(id) {
-    statusMessage="Deleting"
-    transition(STATUS);
-    cancelInterview(id).then(() => transition(EMPTY));
+    transition(DELETE);
+    cancelInterview(id)
+      .then(() => transition(EMPTY))
+      .catch(() => transition(ERROR_DELETE));
   }
 
   return (
@@ -46,13 +50,22 @@ export default function Appointment(props) {
         onConfirm={() => deleteAppointment(id)}
         onCancel={() => back()}
         />}
-      {mode === STATUS && <Status message={statusMessage} />}
+      {mode === SAVE && <Status message="Saving" />}
+      {mode === DELETE && <Status message="Deleting" />}
       {mode === SHOW && <Show
         student={interview.student}
         interviewer={interview.interviewer}
+        onEdit={() => transition(EDIT)}
         onDelete={() => transition(CONFIRM)}
       />}
       {mode === CREATE && <Form
+        interviewers={interviewers}
+        onCancel={() => back()}
+        onSave={save}
+        />}
+      {mode === EDIT && <Form
+        student={interview.student}
+        interviewer={interview.interviewer}
         interviewers={interviewers}
         onCancel={() => back()}
         onSave={save}
