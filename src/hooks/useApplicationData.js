@@ -5,13 +5,17 @@ const SET_DAY = "SET_DAY";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW = "SET_INTERVIEW";
 
+// reducer to set state
 function reducer(state, action) {
   switch (action.type) {
+    // changing day state
     case SET_DAY:
       return {
         ...state,
         day: action.day
       };
+    
+    // for initializing data on first load
     case SET_APPLICATION_DATA:
       return {
         ...state,
@@ -19,18 +23,42 @@ function reducer(state, action) {
         appointments: action.appointments,
         interviewers: action.interviewers
       };
+
+    // update state for appointments (add/edit/delete interview) and days (spots)
     case SET_INTERVIEW: {
+      
+      // get current day object
+      const currentDay = state.days.find(day => day.name === state.day);
+
+      // with appointments array for current day, sum null interviews in updated appointments
+      const spotsRemaining = currentDay.appointments.filter(
+        appointmentId => action.appointments[appointmentId].interview === null
+        ).length;
+
+      // create new day object for current day with updated spots
+      const day = {
+        ...currentDay,
+        spots: spotsRemaining
+      };
+
+      // create new days array with all existing day objects and replace current day object with new
+      const days = state.days.map(
+        stateDay => stateDay.id !== currentDay.id ? {...stateDay} : day
+      );
+      
       return {
         ...state,
         appointments: {
           ...state.appointments,
           [action.id]: {
             ...state.appointments[action.id],
-            interview: {...action.interview}
+            interview: action.interview ? {...action.interview} : null
           }
-        }
+        },
+        days
       };
     }
+
     default:
       throw new Error(
         `Tried to reduce with unsupported action type: ${action.type}`
@@ -82,13 +110,10 @@ export default function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
-
-    // generate new days array based on updated appointments
-    const days = updateSpots(state, appointments);
     
     // PUT request to server and set new state
     return axios.put(`/api/appointments/${id}`, appointment)
-      .then(() => dispatch({ type: SET_INTERVIEW, id, interview }));
+      .then(() => dispatch({ type: SET_INTERVIEW, id, interview, appointments }));
   }
 
   // axios DELETE request to remove interview data for appointment slot
@@ -105,38 +130,10 @@ export default function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
-
-    // generate new days array based on updated appointments
-    const days = updateSpots(state, appointments);
     
     // DELETE request to server and set new state
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => dispatch({ type: SET_INTERVIEW, id, interview: null }));
-  }
-
-  // return new days array of day objects with updated spots after appointment change
-  function updateSpots(state, appointments) {
-    
-    // get current day object
-    const currentDay = state.days.find(day => day.name === state.day);
-    
-    // with appointments array for current day, sum null interviews in updated appointments
-    const spotsRemaining = currentDay.appointments.filter(
-      appointmentId => appointments[appointmentId].interview === null
-      ).length;
-
-    // create new day object for current day with updated spots
-    const day = {
-      ...currentDay,
-      spots: spotsRemaining
-    };
-
-    // create new days array with all existing day objects and replace current day object with new
-    const days = state.days.map(
-      stateDay => stateDay.id !== currentDay.id ? {...stateDay} : day
-      );
-
-    return days;
+      .then(() => dispatch({ type: SET_INTERVIEW, id, interview: null, appointments }));
   }
 
   return {
