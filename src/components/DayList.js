@@ -3,7 +3,7 @@ import DayListItem from './DayListItem';
 
 // Component to contain each day
 function DayList(props) {
-  const { days, value, onChange }
+  const { days, value, onChange } = props;
 
   // generate array of Day components to render
   const daysArray = days.map(day => <DayListItem
