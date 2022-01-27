@@ -1,7 +1,8 @@
 import React from 'react';
 
+// appointment view for existing appointments -- name, interviewer, edit, delete
 export default function Show(props) {
-  const { student, interviewer, onEdit, onDelete} = props;
+  const { student, interviewer, onEdit, onDelete } = props;
   
   return (
     <main className="appointment__card appointment__card--show">

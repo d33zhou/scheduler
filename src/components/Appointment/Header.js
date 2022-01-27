@@ -1,5 +1,6 @@
 import React from 'react';
 
+// add time to card with separator
 export default function Header(props) {
   return (
     <header className="appointment__time">

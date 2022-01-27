@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'components/Button';
 
+// confirm for destructive action -- for deleting
 export default function Confirm(props) {
   const { message, onConfirm, onCancel } = props;
   

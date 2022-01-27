@@ -1,5 +1,6 @@
 import React from 'react';
 
+// no appointment view -- just add button
 export default function Empty(props) {
   return (
     <main className="appointment__add">

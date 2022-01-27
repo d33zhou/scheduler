@@ -1,5 +1,6 @@
 import React from 'react';
 
+// error view -- for rejected request responses
 export default function Error(props) {
   const { message, onClose } = props;
   

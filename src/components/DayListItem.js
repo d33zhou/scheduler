@@ -2,7 +2,9 @@ import React from "react";
 import "components/DayListItem.scss";
 import classNames from "classnames";
 
+// Component for each day (day name, spots remaining)
 export default function DayListItem(props) {
+  // conditional class names
   const dayClass = classNames('day-list__item', {
     'day-list__item--selected': props.selected,
     'day-list__item--full': props.spots === 0
