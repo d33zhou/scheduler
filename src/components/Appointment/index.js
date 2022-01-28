@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "components/Appointment/styles.scss";
 
 // Components
@@ -50,6 +50,17 @@ export default function Appointment(props) {
       .catch(error => transition(ERROR_DELETE, true));
   }
 
+  // apply incoming changes from server to current client view
+  useEffect(() => {
+    if (interview && mode === EMPTY) {
+      transition(SHOW);
+    }
+    
+    if (!interview && mode === SHOW) {
+      transition(EMPTY);
+    }
+  }, [interview, transition, mode]);
+
   return (
     <article className="appointment">
       <Header time={time} />
@@ -61,7 +72,7 @@ export default function Appointment(props) {
         />}
       {mode === SAVE && <Status message="Saving" />}
       {mode === DELETE && <Status message="Deleting" />}
-      {mode === SHOW && <Show
+      {mode === SHOW && interview && <Show
         student={interview.student}
         interviewer={interview.interviewer}
         onEdit={() => transition(EDIT)}

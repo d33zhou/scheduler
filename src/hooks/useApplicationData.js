@@ -26,13 +26,29 @@ function reducer(state, action) {
 
     // update state for appointments (add/edit/delete interview) and days (spots)
     case SET_INTERVIEW: {
-      
+
+      // APPOINTMENTS -----
+
+      // clone new appointment object for new appointment to replace empty appointment
+      const appointment = {
+        ...state.appointments[action.id],
+        interview: action.interview ? {...action.interview} : null
+      };
+
+      // clone new appointments object and replace appointment value for current appointment
+      const appointments = {
+        ...state.appointments,
+        [action.id]: appointment
+      };
+
+      // DAYS -----
+
       // get current day object
       const currentDay = state.days.find(day => day.name === state.day);
 
       // with appointments array for current day, sum null interviews in updated appointments
       const spotsRemaining = currentDay.appointments.filter(
-        appointmentId => action.appointments[appointmentId].interview === null
+        appointmentId => appointments[appointmentId].interview === null
         ).length;
 
       // create new day object for current day with updated spots
@@ -48,13 +64,7 @@ function reducer(state, action) {
       
       return {
         ...state,
-        appointments: {
-          ...state.appointments,
-          [action.id]: {
-            ...state.appointments[action.id],
-            interview: action.interview ? {...action.interview} : null
-          }
-        },
+        appointments,
         days
       };
     }
@@ -94,46 +104,48 @@ export default function useApplicationData() {
         interviewers: all[2].data
       });
     });
+
+
+    // WebSocket -----
+
+    // create new WebSocket
+    const ws = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+
+    // send message to server on connection
+    ws.onopen = event => {
+      ws.send("ping");
+    };
+
+    // event listener, on receiving messages from server set new state with data
+    ws.onmessage = event => {
+      
+      // parse JSON string
+      const { type, id, interview } = JSON.parse(event.data);
+
+      if (type === SET_INTERVIEW) {
+        dispatch({
+          type: SET_INTERVIEW,
+          id: id,
+          interview: interview,
+        });
+      }
+    }
   }, []);
 
   // axios PUT request to update server API and state for persistent data
   function bookInterview(id, interview) {
-    
-    // clone new appointment object for new appointment to replace empty appointment
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
 
-    // clone new appointments object and replace appointment value for current appointment
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    
     // PUT request to server and set new state
-    return axios.put(`/api/appointments/${id}`, appointment)
-      .then(() => dispatch({ type: SET_INTERVIEW, id, interview, appointments }));
+    return axios.put(`/api/appointments/${id}`, {interview})
+      .then(() => dispatch({ type: SET_INTERVIEW, id, interview }));
   }
 
   // axios DELETE request to remove interview data for appointment slot
   function cancelInterview(id) {
     
-    // clone new appointment object and null the existing interview object
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    };
-
-    // clone new appointments object and replace appointment value for current appointment
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    
     // DELETE request to server and set new state
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => dispatch({ type: SET_INTERVIEW, id, interview: null, appointments }));
+      .then(() => dispatch({ type: SET_INTERVIEW, id, interview: null }));
   }
 
   return {
