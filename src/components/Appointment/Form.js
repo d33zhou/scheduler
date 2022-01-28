@@ -33,6 +33,11 @@ export default function Form(props) {
       return;
     }
 
+    if (interviewer === null) {
+      setError("Interviewer cannot be blank");
+      return;
+    }
+
     // remove error message and save appointment details
     setError(null);
     onSave(student, interviewer);
