@@ -41,7 +41,7 @@ function reducer(state, action) {
         [action.id]: appointment
       };
 
-      // DAYS -----
+      // DAYS -------------
 
       // get current day object
       const currentDay = state.days.find(day => day.name === state.day);
