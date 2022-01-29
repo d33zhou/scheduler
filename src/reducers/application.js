@@ -6,11 +6,11 @@ const SET_INTERVIEW = "SET_INTERVIEW";
 function reducer(state, action) {
   switch (action.type) {
     // changing day state
-    case SET_DAY:
-      return {
-        ...state,
-        day: action.day
-      };
+    // case SET_DAY:
+    //   return {
+    //     ...state,
+    //     day: action.day
+    //   };
     
     // for initializing data on first load
     case SET_APPLICATION_DATA:
