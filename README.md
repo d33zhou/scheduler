@@ -26,6 +26,8 @@ Dependencies:
 
 Click [here](https://vigilant-hodgkin-991ef0.netlify.app/) for live demo (allow brief delay for server to start).
 
+![](https://github.com/d33zhou/scheduler/blob/master/docs/scheduler_gif.gif?raw=true)
+
 ## Running Webpack Development Server
 
 ```sh
