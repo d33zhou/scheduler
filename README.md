@@ -2,6 +2,7 @@
 
 ![](https://img.shields.io/badge/version-v1.0-blue?style=flat&logo=github)
 ![](https://img.shields.io/badge/react-v16.9-blue?style=flat&logo=react)
+![](https://img.shields.io/badge/node.js-v12.22.5-blue?style=flat&logo=nodedotjs)
 
 Interview Scheduler is a single page application built using React, which allows students to book interviews with mentors on any given day, or edit existing interviews. Data is persisted through an API server using a PostgreSQL database and communication between the client and server is handled using Axios. Express is the basis for the Scheduler API server application.
 
@@ -12,6 +13,18 @@ The application further integrates testing using Storybook, Jest, and Cypress.
 ## Setup
 
 Install dependencies with `npm install`.
+
+Dependencies:
+
+- Node.js
+- React
+- Axios
+- ClassNames
+- Normalize.css
+
+## Demo
+
+Click [here](https://vigilant-hodgkin-991ef0.netlify.app/) for live demo (allow brief delay for server to start).
 
 ## Running Webpack Development Server
 
